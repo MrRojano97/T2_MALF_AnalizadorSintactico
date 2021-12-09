@@ -1,0 +1,7 @@
+Error [01]: Una asignatura no lleva su nombre
+Error [02]: No existe Asignatura al momento de guardar un Ayudante
+Error [03]: No existe Profesor al momento de guardar un Ayudante
+Error [04]: Un ayudante no lleva su nombre
+Error [05]: No existe asignatura al momento de guardar un profesor
+Error [06]: Línea de profesor o estudiante contiene información adicional
+Error [07]: Falta nombre de profesor en una asignatura

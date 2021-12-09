@@ -1,0 +1,9 @@
+Asignatura (Explícito) seguido de nombre de Asignatura
+Profesor (1a Línea después de Asignatura) ÚNICO
+Alumnos (Implícito) Cantidad N (mínimo 0)
+Ayudante (Explícito) seguido de nombre del Ayudante (1 o 0 Ayudantes, es decir, esta línea podría no existir)
+
+return:
+0 = Nombre
+1 = Asignatura
+2 = Ayudante
