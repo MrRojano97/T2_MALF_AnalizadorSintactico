@@ -15,6 +15,9 @@ public class Parseador { //Aquí se interpreta qué tipo es cada línea, si es u
             return 2;
         }
         
+        else if (palabra.equals(""))
+            return 3;
+        
         else
             return 0;
     }

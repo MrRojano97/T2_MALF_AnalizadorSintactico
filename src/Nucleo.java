@@ -16,8 +16,8 @@ public class Nucleo {
     int ayudantes = 0;
 
     //Contadores de uso temporal, se utilizarán principalmente para comprobar que se cumpla la gramática
-    String asignatura_Actual = "";
-    String profesor_Actual = "";
+    boolean asignatura_Actual = false;
+    boolean profesor_Actual = false;
     int alumnos_Actual = 0;
     boolean ayudante_Actual = false;
     
@@ -45,12 +45,12 @@ public class Nucleo {
             if (!isActualBlank) reset_Actual(); //Al guardarse una asignatura, significa que, a menos que sea la primera o
             //que la asignatura anterior haya tenido ayudante, deben limpiarse las variables temporales para guardar esta nueva asignatura
             
-            if (text.length==2){ //Verifica que la asignatura tenga nombre y ninguna información adicional
-                asignatura_Actual=text[1];
+            if (text.length>=2){ //Verifica que la asignatura tenga nombre
+                asignatura_Actual=true;
                 isActualBlank=false;
                 return true;
             } else {
-                error = ("Error [01]: Una asignatura no lleva su nombre o contiene información adicional");
+                error = ("Error [01]: Una asignatura no lleva su nombre");
                 return false;
             }
         }
@@ -59,19 +59,19 @@ public class Nucleo {
             
             //Se deben hacer verificaciones para saber si existe Profesor o Asignatura antes de guardar un ayudante
             
-            if (!existeAsignatura()){
+            if (!asignatura_Actual){
                 error = ("Error [02]: No existe Asignatura al momento de guardar un Ayudante");
                 return false;
             }
             
-            if (!existeProfesor()){
+            if (!profesor_Actual){
                 error = ("Error [03]: No existe Profesor al momento de guardar un Ayudante");
                 return false;
             }
             
             //Se verifica que el ayudante tenga nombre
             
-            if (text.length==2){
+            if (text.length>=2){
 
                 ayudante_Actual=true;
                 reset_Actual();
@@ -83,27 +83,32 @@ public class Nucleo {
             }
         }
         
+        else if (type==3) {
+            error = ("Error [06]: Existe una línea en blanco");
+            return false;
+        }
+        
         else {
             //Si no existe una asignatura, no se puede guardar un profesor
             //NOTA: Se asume que sólo fallará con profesor, porque siempre pasa que un profesor viene antes que los estudiantes
             
-            if (!existeAsignatura()){
+            if (!asignatura_Actual){
                 error = ("Error [05]: No existe asignatura al momento de guardar un profesor");
             }
             
-            if (text.length==1){
+            //if (text.length==1){
             
-                if (!existeProfesor()){
-                    profesor_Actual=text[0];
+                if (!profesor_Actual){
+                    profesor_Actual=true;
                     return true;
                 } else {
                     alumnos_Actual+=1;
                     return true;
                 }
-            } else {
+            /*} else {
                 error = ("Error [06]: Línea de profesor o estudiante contiene información adicional");
                 return false;
-            }
+            }*/
         }
         
     }
@@ -112,13 +117,13 @@ public class Nucleo {
      * @return 
      */
     private boolean reset_Actual(){
-        if (existeAsignatura()) {
-            asignatura_Actual = "";
+        if (asignatura_Actual) {
+            asignatura_Actual = false;
             asignaturas+=1;
         }
         
-        if (existeProfesor()) {
-            profesor_Actual = "";
+        if (profesor_Actual) {
+            profesor_Actual = false;
             profesores+=1;
         } else {
             error = ("Error [07]: Falta profesor en una asignatura");
@@ -138,17 +143,6 @@ public class Nucleo {
         return true;      
     }
     
-    private boolean existeAsignatura(){ //Verifica que exista una asignatura actual
-        if (!asignatura_Actual.equals(""))
-            return true;
-        else return false;
-    }
-    
-    private boolean existeProfesor(){ //Verifica que exista un profesor actual
-        if (!profesor_Actual.equals(""))
-            return true;
-        else return false;
-    }
     
     private void print(){ //Imprime la información final
         
@@ -175,6 +169,6 @@ public class Nucleo {
                 System.out.println(ayudantes+" ayudantes");
         }
         //Si ocurrió un error, sólo se imprime este
-        else System.out.println(error);
+        else System.err.println(error);
     }
 }
