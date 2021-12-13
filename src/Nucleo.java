@@ -26,7 +26,8 @@ public class Nucleo {
     
     public Nucleo(ArrayList<String[]> text){
         Parseador parseador = new Parseador();
-        int i, returned;
+        int i;
+        char returned;
         
         for (i=0; i<text.size(); i++){ //Se recorren todas las líneas de texto
             if (!error.equals("")) break; //En caso que exista un error, se detiene la ejecución
@@ -38,9 +39,9 @@ public class Nucleo {
         print(); //Imprime los resultados
     }
     
-    private boolean set_Actual(String text[], int type){ //El tipo se sabe gracias al Parseador
+    private boolean set_Actual(String text[], char type){ //El tipo se sabe gracias al Parseador
         
-        if (type==1){ //Asignatura
+        if (type=='a'){ //Asignatura
             
             if (!isActualBlank) reset_Actual(); //Al guardarse una asignatura, significa que, a menos que sea la primera o
             //que la asignatura anterior haya tenido ayudante, deben limpiarse las variables temporales para guardar esta nueva asignatura
@@ -55,7 +56,7 @@ public class Nucleo {
             }
         }
         
-        else if (type==2){ //Ayudante
+        else if (type=='h'){ //Ayudante
             
             //Se deben hacer verificaciones para saber si existe Profesor o Asignatura antes de guardar un ayudante
             
@@ -83,12 +84,12 @@ public class Nucleo {
             }
         }
         
-        else if (type==3) {
+        else if (type=='e') {
             error = ("Error [06]: Existe una línea en blanco");
             return false;
         }
         
-        else {
+        else if (type=='p') {
             //Si no existe una asignatura, no se puede guardar un profesor
             //NOTA: Se asume que sólo fallará con profesor, porque siempre pasa que un profesor viene antes que los estudiantes
             
@@ -110,6 +111,8 @@ public class Nucleo {
                 return false;
             }*/
         }
+        
+        return false;
         
     }
     /**

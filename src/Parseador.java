@@ -3,22 +3,18 @@
  *
  * @author elias
  */
-public class Parseador { //Aquí se interpreta qué tipo es cada línea, si es una asignatura, ayudante o un nombre
+public class Parseador { //Aquí se interpreta qué tipo es cada línea según está descrito en la gramática
     
-    public int Parseador(String palabra){
+    public char Parseador(String palabra){
         
-        if (palabra.equals("Asignatura")) {
-            return 1;
-        }
-        
-        else if (palabra.equals("Ayudante")) {
-            return 2;
-        }
-        
-        else if (palabra.equals(""))
-            return 3;
-        
-        else
-            return 0;
+        return switch (palabra) {
+            case "Asignatura" -> 'a';
+            case "Ayudante" -> 'h';
+            case "" -> 'e';
+            default -> 'p';
+        }; //Gramática Asignatura
+        //Gramática Ayudante
+        //Si es vacío, es un error
+        //Gramática persona
     }
 }
