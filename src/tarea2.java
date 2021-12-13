@@ -5,7 +5,7 @@ import java.util.Scanner;
  *
  * @author elias
  */
-public class Main {
+public class tarea2 {
 
     /**
      * @param args the command line arguments

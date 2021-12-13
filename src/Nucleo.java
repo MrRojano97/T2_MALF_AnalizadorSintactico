@@ -45,12 +45,12 @@ public class Nucleo {
             if (!isActualBlank) reset_Actual(); //Al guardarse una asignatura, significa que, a menos que sea la primera o
             //que la asignatura anterior haya tenido ayudante, deben limpiarse las variables temporales para guardar esta nueva asignatura
             
-            if (text.length==2){ //Verifica que la asignatura tenga nombre
+            if (text.length==2){ //Verifica que la asignatura tenga nombre y ninguna información adicional
                 asignatura_Actual=text[1];
                 isActualBlank=false;
                 return true;
             } else {
-                error = ("Error [01]: Una asignatura no lleva su nombre");
+                error = ("Error [01]: Una asignatura no lleva su nombre o contiene información adicional");
                 return false;
             }
         }
