@@ -1,7 +1,7 @@
 
 /**
  *
- * @author elias
+ * @author Elías Avendaño | José Avendaño | Carmen Ortega
  */
 public class Parseador { //Aquí se interpreta qué tipo es cada línea según está descrito en la gramática
     

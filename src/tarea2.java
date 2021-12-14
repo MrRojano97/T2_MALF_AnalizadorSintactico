@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 /**
  *
- * @author elias
+ * @author Elías Avendaño | José Avendaño | Carmen Ortega
  */
 public class tarea2 {
 

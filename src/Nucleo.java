@@ -3,36 +3,37 @@ import java.util.ArrayList;
 
 /**
  *
- * @author elias
+ * @author Elías Avendaño | José Avendaño | Carmen Ortega
  * Aquí se irá enviando cada línea del archivo hacia el parseador, y a su vez
  * contando la cantidad de asignaturas, profesores, alumnos y ayudantes
  */
 public class Nucleo {
     
-    //Estos serán los contadores finales, de acá se podrá utilizar para imprimir al cantidad total
+    //Variables totales, de acá se podrá utilizar para imprimir la cantidad total
     int asignaturas = 0;
     int profesores = 0;
     int alumnos = 0;
     int ayudantes = 0;
 
-    //Contadores de uso temporal, se utilizarán principalmente para comprobar que se cumpla la gramática
+    //Variables Actuales, se utilizarán principalmente para comprobar que se cumpla la gramática
     boolean asignatura_Actual = false;
     boolean profesor_Actual = false;
     int alumnos_Actual = 0;
     boolean ayudante_Actual = false;
     
-    boolean isActualBlank = true; //Es verdadero cuando las variables de uso temporal están limpias
+    int linea; //Linea actual que se está leyendo
+    
+    boolean isActualBlank = true; //Es verdadero cuando las variables actuales están limpias
     String error = ""; //En caso que se produzca un error, servirá para imprimirlo al final de la ejecución
     
     public Nucleo(ArrayList<String[]> text){
         Parseador parseador = new Parseador();
-        int i;
         char returned;
         
-        for (i=0; i<text.size(); i++){ //Se recorren todas las líneas de texto
-            if (!error.equals("")) break; //En caso que exista un error, se detiene la ejecución
-            returned = parseador.Parseador(text.get(i)[0]);
-            set_Actual(text.get(i), returned);
+        for (linea=0; linea<text.size(); linea++){ //Se recorren todas las líneas de texto
+            returned = parseador.Parseador(text.get(linea)[0]);
+            if (!set_Actual(text.get(linea), returned))
+                break; //En caso que exista un error, se detiene la ejecución
 
         }
         if ((!isActualBlank) & (error.equals(""))) reset_Actual(); //Sólo en caso que existan datos en las variables temporales y no haya un error, se procede a guardar la información de la última asignatura
@@ -43,8 +44,11 @@ public class Nucleo {
         
         if (type=='a'){ //Asignatura
             
-            if (!isActualBlank) reset_Actual(); //Al guardarse una asignatura, significa que, a menos que sea la primera o
+            //Al guardarse una asignatura, significa que, a menos que sea la primera o
             //que la asignatura anterior haya tenido ayudante, deben limpiarse las variables temporales para guardar esta nueva asignatura
+            if (!isActualBlank){
+                if (!reset_Actual()) return false;
+            }
             
             if (text.length>=2){ //Verifica que la asignatura tenga nombre
                 asignatura_Actual=true;
@@ -58,15 +62,10 @@ public class Nucleo {
         
         else if (type=='h'){ //Ayudante
             
-            //Se deben hacer verificaciones para saber si existe Profesor o Asignatura antes de guardar un ayudante
-            
-            if (!asignatura_Actual){
-                error = ("Error [02]: No existe Asignatura al momento de guardar un Ayudante");
-                return false;
-            }
+            //Se deben hacer verificaciones para saber si existe Profesor antes de guardar un ayudante
             
             if (!profesor_Actual){
-                error = ("Error [03]: No existe Profesor al momento de guardar un Ayudante");
+                error = ("Error [02]: No existe Profesor al momento de guardar un Ayudante o existen dos Ayudantes en una misma Asignatura");
                 return false;
             }
             
@@ -79,13 +78,13 @@ public class Nucleo {
                 return true;
                 
             } else {
-                error = ("Error [04]: Un ayudante no lleva su nombre");
+                error = ("Error [03]: Un Ayudante no lleva su nombre");
                 return false;
             }
         }
         
         else if (type=='e') {
-            error = ("Error [06]: Existe una línea en blanco");
+            error = ("Error [05]: Existe una línea en blanco");
             return false;
         }
         
@@ -94,29 +93,25 @@ public class Nucleo {
             //NOTA: Se asume que sólo fallará con profesor, porque siempre pasa que un profesor viene antes que los estudiantes
             
             if (!asignatura_Actual){
-                error = ("Error [05]: No existe asignatura al momento de guardar un profesor");
+                error = ("Error [04]: No existe Asignatura al momento de guardar un Profesor");
+                return false;
             }
             
-            //if (text.length==1){
-            
-                if (!profesor_Actual){
-                    profesor_Actual=true;
-                    return true;
-                } else {
-                    alumnos_Actual+=1;
-                    return true;
-                }
-            /*} else {
-                error = ("Error [06]: Línea de profesor o estudiante contiene información adicional");
-                return false;
-            }*/
+            if (!profesor_Actual){
+                profesor_Actual=true;
+                return true;
+            } else {
+                alumnos_Actual+=1;
+                return true;
+            }
         }
         
+        error = ("Error [100]: Se ha producido un error de ejecución desconocido"); //A menos que haya una falla interna del CPU que está ejecutando el programa, no debería ser posible que el programa ejecute esta instrucción
         return false;
         
     }
     /**
-     * Reinicia las variables temporales actuales
+     * Reinicia las variables actuales
      * @return 
      */
     private boolean reset_Actual(){
@@ -129,7 +124,7 @@ public class Nucleo {
             profesor_Actual = false;
             profesores+=1;
         } else {
-            error = ("Error [07]: Falta profesor en una asignatura");
+            error = ("Error [06]: Falta Profesor en una Asignatura");
             return false;
         }
         
@@ -171,7 +166,10 @@ public class Nucleo {
             else
                 System.out.println(ayudantes+" ayudantes");
         }
-        //Si ocurrió un error, sólo se imprime este
-        else System.err.println(error);
+        //Si ocurrió un error, sólo se imprime este seguido de la línea donde ocurrió el problema
+        else {
+            System.err.println(error);
+            System.err.println("Corrija el error producido en la línea: "+(linea+1));
+        }
     }
 }
